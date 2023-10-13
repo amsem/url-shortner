@@ -26,6 +26,7 @@ func main()  {
     r := mux.NewRouter()
     r.HandleFunc("/v1/short/{encoded_string:[a-zA-Z0-9]*}", dbCLIENT.GetOriginalURL).Methods("GET")
     r.HandleFunc("/v1/short", dbCLIENT.GenerateShortURL).Methods("POST")
+    r.HandleFunc("/v1/short", dbCLIENT.DeleteShortURL).Methods("DELETE")
     srv := &http.Server{
     Handler: r,
     Addr: "127.0.0.1:8000",

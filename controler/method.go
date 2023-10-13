@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"io"
+	"log"
 	"net/http"
 
 	"github.com/amsem/url-shortner/utils"
@@ -58,3 +59,24 @@ func (driver *DBclient) GenerateShortURL(w http.ResponseWriter, r *http.Request)
         w.Write(response)
     }
 }
+
+func (driver *DBclient) DeleteShortURL(w http.ResponseWriter, r *http.Request)  {
+    var record Record
+    postBody, _ := io.ReadAll(r.Body)
+    err := json.Unmarshal(postBody, &record)
+    
+    if err != nil {
+        panic(err)
+    }
+    log.Println("Im here 3333")
+    err = driver.DB.QueryRow("DELETE FROM web_url * WHERE id = ($1)", record.ID).Err()
+  if err != nil {
+        w.WriteHeader(http.StatusInternalServerError)
+        w.Write([]byte(err.Error()))
+    }else {
+        w.WriteHeader(http.StatusOK)
+        w.Write([]byte("deleted"))
+    }
+    log.Println("Im here 1")
+}
+  
